@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: schmale Lernspalte, oben ein Konjunkturzyklus als Leitmotiv, darunter Reiter für Start / Quiz / Kompetenzcheck */
+/* Layout: schmale Lernspalte mit Reitern für Start / Quiz / Kompetenzcheck */
 :root{
   --bg:#F1F4F5; --surface:#FFFFFF; --ink:#13232E; --muted:#56666F; --line:#D3DCE0;
   --accent:#0B6E79; --accent-ink:#FFFFFF; --soft:#DCEDEE; --signal:#C9661A; --signal-soft:#FBEBDD;
@@ -182,26 +182,6 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--li
       <div class="eyebrow">Sozialwissenschaften Q1 · 1. Klausur · Konjunkturanalyse</div>
       <h1>Bereit für die Klausur?</h1>
       <p class="lead">Hier wiederholst du alles aus der Reihe „Sachverständigenrat“: Wirtschaftskreislauf, BIP, Konjunkturphasen, die Ziele des Stabilitätsgesetzes, Arbeitslosigkeit, Inflation, Außenbeitrag und die Bewertung wirtschaftspolitischer Maßnahmen. Dein Fortschritt wird nur in diesem Browser gespeichert.</p>
-    </div>
-    <div class="cycle" aria-label="Idealtypischer Konjunkturzyklus mit vier Phasen">
-      <svg viewBox="0 0 760 190" role="img">
-        <title>Idealtypischer Konjunkturzyklus</title>
-        <line x1="20" y1="110" x2="740" y2="110" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="5 5"/>
-        <text x="742" y="106" text-anchor="end">Trend</text>
-        <path d="M20 150 C110 150 140 40 230 40 S350 165 440 165 S560 40 650 40 S720 80 740 95" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round"/>
-        <circle cx="230" cy="40" r="6" fill="var(--signal)"/>
-        <circle cx="440" cy="165" r="6" fill="var(--signal)"/>
-        <text class="ph" x="70" y="72" text-anchor="middle">Aufschwung</text>
-        <text x="70" y="90" text-anchor="middle">Expansion</text>
-        <text class="ph" x="230" y="22" text-anchor="middle">Boom</text>
-        <text x="300" y="42">Hochkonjunktur</text>
-        <text class="ph" x="410" y="72" text-anchor="middle">Abschwung</text>
-        <text x="410" y="90" text-anchor="middle">Rezession</text>
-        <text class="ph" x="440" y="185" text-anchor="middle">Konjunkturtief</text>
-        <text x="520" y="168">Depression</text>
-        <text x="24" y="20">reales BIP</text>
-        <text x="560" y="188">neuer Aufschwung →</text>
-      </svg>
     </div>
     <div class="tiles">
       <a class="tile" href="#quiz"><span class="eyebrow">Üben</span><span class="big">Quiz</span><span class="meta">Multiple Choice und Rechenaufgaben mit Erklärung zu jeder Antwort.</span><span class="stat" id="t-quiz"></span></a>

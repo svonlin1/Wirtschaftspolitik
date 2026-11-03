@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important} img{max-width:100%} :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Wirtschaftsweise-Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: schmale Lernspalte, oben ein Konjunkturzyklus als Leitmotiv, darunter Reiter für Start / Quiz / Lernkarten / Kompetenzcheck */
+:root{
+  --bg:#F1F4F5; --surface:#FFFFFF; --ink:#13232E; --muted:#56666F; --line:#D3DCE0;
+  --accent:#0B6E79; --accent-ink:#FFFFFF; --soft:#DCEDEE; --signal:#C9661A; --signal-soft:#FBEBDD;
+  --good:#2C7A4B; --good-soft:#DFF1E6; --bad:#B23A2E; --bad-soft:#F8E1DE; --warn:#A87400; --warn-soft:#F7EDCF;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E181E; --surface:#15232B; --ink:#E4EDF0; --muted:#97A9B2; --line:#2A3C46;
+  --accent:#3DB0BA; --accent-ink:#06262A; --soft:#173840; --signal:#F0A057; --signal-soft:#3A2816;
+  --good:#5DC489; --good-soft:#163527; --bad:#EB7B6B; --bad-soft:#3C1D19; --warn:#E3B54A; --warn-soft:#3A2F12;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E181E; --surface:#15232B; --ink:#E4EDF0; --muted:#97A9B2; --line:#2A3C46;
+  --accent:#3DB0BA; --accent-ink:#06262A; --soft:#173840; --signal:#F0A057; --signal-soft:#3A2816;
+  --good:#5DC489; --good-soft:#163527; --bad:#EB7B6B; --bad-soft:#3C1D19; --warn:#E3B54A; --warn-soft:#3A2F12;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.6rem,4.5vw,2.3rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.4rem;font-weight:700}
+h3{font-size:1.08rem;font-weight:700}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* Kopf */
+header.top{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:800;font-size:1.05rem;color:var(--ink);text-decoration:none}
+.brand svg{flex:none}
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap}
+nav.tabs a{text-decoration:none;color:var(--muted);font-weight:600;padding:6px 10px;border-radius:999px;font-size:.92rem}
+nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--accent-ink)}
+nav.tabs a:not([aria-current="page"]):hover{background:var(--soft);color:var(--ink)}
+main{padding-block:28px 56px}
+section.view{display:grid;gap:22px}
+
+/* Start */
+.hero{display:grid;gap:14px}
+.hero p.lead{color:var(--muted);max-width:62ch;font-size:1.05rem}
+.cycle{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 10px 6px;overflow-x:auto}
+.cycle svg{display:block;width:100%;min-width:520px;height:auto}
+.cycle text{font-family:var(--f-body);fill:var(--muted);font-size:13px}
+.cycle .ph{font-weight:700;fill:var(--ink);font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tile{display:grid;gap:6px;align-content:start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;text-decoration:none;color:inherit}
+.tile:hover{border-color:var(--accent)}
+.tile .big{font-family:var(--f-display);font-weight:800;font-size:1.25rem}
+.tile .meta{color:var(--muted);font-size:.92rem}
+.tile .stat{font-family:var(--f-mono);font-size:.85rem;color:var(--accent)}
+.two{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:12px;align-content:start;min-width:0}
+ol.steps{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:s}
+ol.steps li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;counter-increment:s}
+ol.steps li::before{content:counter(s);font-family:var(--f-mono);font-size:.8rem;width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--accent);display:grid;place-items:center;margin-top:1px}
+ol.steps b{font-weight:700}
+ol.steps span{color:var(--muted)}
+table.ops{border-collapse:collapse;width:100%;font-size:.95rem}
+table.ops td{padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+table.ops td:first-child{font-weight:700;white-space:nowrap;padding-right:10px}
+.afb{display:inline-block;font-family:var(--f-mono);font-size:.75rem;padding:1px 7px;border-radius:999px;background:var(--signal-soft);color:var(--signal);margin-left:6px}
+.note{font-size:.88rem;color:var(--muted)}
+
+/* Chips */
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.9rem;font-weight:600;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--soft);border-color:var(--accent);color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:8px;padding:10px 16px;font-weight:700;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.warn{background:var(--bad);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+
+/* Quiz */
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:grid;gap:16px}
+.qhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.tag{font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--accent)}
+.progress{height:6px;border-radius:999px;background:var(--line);overflow:hidden}
+.progress > i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.prompt{font-size:1.15rem;font-weight:600;max-width:68ch}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:11px 14px;display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;align-items:start}
+.opt .k{font-family:var(--f-mono);font-size:.8rem;width:24px;height:24px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+.numrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.numrow input{font:inherit;font-family:var(--f-mono);width:9rem;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.numrow .unit{color:var(--muted)}
+.feedback{border-radius:8px;padding:12px 14px;display:grid;gap:4px}
+.feedback.ok{background:var(--good-soft)}
+.feedback.no{background:var(--bad-soft)}
+.feedback b{font-family:var(--f-display)}
+.datatbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+.datatbl table{border-collapse:collapse;width:100%;min-width:460px;font-size:.92rem}
+.datatbl th,.datatbl td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.datatbl th:first-child,.datatbl td:first-child{text-align:left}
+.datatbl thead th{background:var(--soft);font-weight:700}
+.datatbl caption{caption-side:top;text-align:left;padding:8px 10px;font-weight:700}
+.result{display:grid;gap:14px}
+.score{font-family:var(--f-display);font-weight:800;font-size:2.4rem}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(0,12rem) minmax(0,1fr) 3.5rem;gap:10px;align-items:center;font-size:.92rem}
+.bar .track{height:8px;background:var(--line);border-radius:999px;overflow:hidden}
+.bar .track i{display:block;height:100%}
+.bar .v{font-family:var(--f-mono);text-align:right}
+
+/* Karten */
+.flipzone{perspective:1200px}
+.flash{position:relative;width:100%;min-height:270px;border:0;padding:0;background:none;text-align:left;transform-style:preserve-3d;transition:transform .45s ease}
+.flash.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;overflow:auto;backface-visibility:hidden;border-radius:var(--r);padding:24px;display:grid;align-content:center;gap:10px;border:1px solid var(--line)}
+.face.front{background:var(--surface)}
+.face.back{background:var(--soft);transform:rotateY(180deg)}
+.face .term{font-family:var(--f-display);font-weight:800;font-size:clamp(1.4rem,4vw,1.9rem)}
+.face .def{font-size:1.02rem;max-width:62ch}
+.face .hint{position:absolute;right:16px;bottom:12px;font-size:.8rem;color:var(--muted)}
+.cardbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.btn.again{background:var(--warn-soft);color:var(--ink);border:1px solid var(--warn)}
+.btn.known{background:var(--good-soft);color:var(--ink);border:1px solid var(--good)}
+.counts{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
+
+/* Kompetenzcheck */
+.comp{display:grid;gap:14px}
+.ctopic{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:10px}
+.ctopic .chead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.light{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:700;padding:3px 10px;border-radius:999px}
+.light::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
+.light.g{background:var(--good-soft);color:var(--good)}
+.light.y{background:var(--warn-soft);color:var(--warn)}
+.light.r{background:var(--bad-soft);color:var(--bad)}
+.light.n{background:var(--bg);color:var(--muted)}
+.stmt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding-top:10px;border-top:1px solid var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 10px;font-size:.85rem;font-weight:600;color:var(--muted)}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"][data-v="1"]{background:var(--bad-soft);color:var(--bad)}
+.seg button[aria-pressed="true"][data-v="2"]{background:var(--warn-soft);color:var(--warn)}
+.seg button[aria-pressed="true"][data-v="3"]{background:var(--good-soft);color:var(--good)}
+.quizinfo{font-size:.88rem;color:var(--muted)}
+.recs{display:grid;gap:8px}
+.rec{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-radius:8px;background:var(--bg)}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.92rem}
+
+@media (max-width:720px){
+  .flash{min-height:330px}
+  .tiles{grid-template-columns:minmax(0,1fr)}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .stmt{grid-template-columns:minmax(0,1fr)}
+  .bar{grid-template-columns:minmax(0,1fr) 3.5rem}
+  .bar .track{grid-column:1 / -1;grid-row:2}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#start" aria-label="Zur Startseite">
+      <svg width="34" height="22" viewBox="0 0 34 22" aria-hidden="true"><path d="M1 15 C6 15 7 3 12 3 S18 19 23 19 S29 7 33 7" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/><circle cx="12" cy="3" r="2.4" fill="var(--signal)"/></svg>
+      Wirtschaftsweise-Training
+    </a>
+    <nav class="tabs" aria-label="Bereiche">
+      <a href="#start" data-view="start">Start</a>
+      <a href="#quiz" data-view="quiz">Quiz</a>
+      <a href="#karten" data-view="karten">Lernkarten</a>
+      <a href="#check" data-view="check">Kompetenzcheck</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- START -->
+  <section class="view" id="v-start">
+    <div class="hero">
+      <div class="eyebrow">Sozialwissenschaften Q1 · 1. Klausur · Konjunkturanalyse</div>
+      <h1>Bereit für das Jahresgutachten?</h1>
+      <p class="lead">Hier wiederholst du alles aus der Reihe „Sachverständigenrat“: Wirtschaftskreislauf, BIP, Konjunkturphasen, die Ziele des Stabilitätsgesetzes, Arbeitslosigkeit, Inflation, Außenbeitrag und die Bewertung wirtschaftspolitischer Maßnahmen. Dein Fortschritt wird nur in diesem Browser gespeichert.</p>
+    </div>
+    <div class="cycle" aria-label="Idealtypischer Konjunkturzyklus mit vier Phasen">
+      <svg viewBox="0 0 760 190" role="img">
+        <title>Idealtypischer Konjunkturzyklus</title>
+        <line x1="20" y1="110" x2="740" y2="110" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="5 5"/>
+        <text x="742" y="106" text-anchor="end">Trend</text>
+        <path d="M20 150 C110 150 140 40 230 40 S350 165 440 165 S560 40 650 40 S720 80 740 95" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="230" cy="40" r="6" fill="var(--signal)"/>
+        <circle cx="440" cy="165" r="6" fill="var(--signal)"/>
+        <text class="ph" x="70" y="72" text-anchor="middle">Aufschwung</text>
+        <text x="70" y="90" text-anchor="middle">Expansion</text>
+        <text class="ph" x="230" y="22" text-anchor="middle">Boom</text>
+        <text x="300" y="42">Hochkonjunktur</text>
+        <text class="ph" x="410" y="72" text-anchor="middle">Abschwung</text>
+        <text x="410" y="90" text-anchor="middle">Rezession</text>
+        <text class="ph" x="440" y="185" text-anchor="middle">Konjunkturtief</text>
+        <text x="520" y="168">Depression</text>
+        <text x="24" y="20">reales BIP</text>
+        <text x="560" y="188">neuer Aufschwung →</text>
+      </svg>
+    </div>
+    <div class="tiles">
+      <a class="tile" href="#quiz"><span class="eyebrow">Üben</span><span class="big">Quiz</span><span class="meta">Multiple Choice und Rechenaufgaben mit Erklärung zu jeder Antwort.</span><span class="stat" id="t-quiz"></span></a>
+      <a class="tile" href="#karten"><span class="eyebrow">Wiederholen</span><span class="big">Lernkarten</span><span class="meta">Fachbegriffe umdrehen, einsortieren und so lange wiederholen, bis sie sitzen.</span><span class="stat" id="t-cards"></span></a>
+      <a class="tile" href="#check"><span class="eyebrow">Einschätzen</span><span class="big">Kompetenzcheck</span><span class="meta">Was kannst du schon sicher? Selbsteinschätzung plus Quizergebnisse ergeben deinen Lernplan.</span><span class="stat" id="t-check"></span></a>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="view" id="v-quiz" hidden>
+    <div id="quiz-setup" class="panel">
+      <div class="eyebrow">Quiz</div>
+      <h2>Welche Themen willst du üben?</h2>
+      <div class="chips" id="quiz-topics"></div>
+      <div class="row">
+        <label for="quiz-len">Anzahl Fragen</label>
+        <select id="quiz-len"><option value="10">10 Fragen</option><option value="20">20 Fragen</option><option value="999">alle Fragen der Auswahl</option></select>
+        <button class="btn" id="quiz-start">Quiz starten</button>
+      </div>
+      <p class="note" id="quiz-avail"></p>
+    </div>
+    <div id="quiz-run" hidden></div>
+  </section>
+
+  <!-- KARTEN -->
+  <section class="view" id="v-karten" hidden>
+    <div class="panel">
+      <div class="eyebrow">Lernkarten</div>
+      <h2>Fachbegriffe wiederholen</h2>
+      <div class="chips" id="card-topics"></div>
+      <div class="row">
+        <button class="chip" id="card-open" aria-pressed="false">Nur Karten, die noch nicht sitzen</button>
+        <button class="btn ghost" id="card-shuffle">Mischen</button>
+      </div>
+    </div>
+    <div id="card-area"></div>
+  </section>
+
+  <!-- CHECK -->
+  <section class="view" id="v-check" hidden>
+    <div class="panel">
+      <div class="eyebrow">Kompetenzcheck</div>
+      <h2>Was kannst du schon?</h2>
+      <p>Schätze dich bei jeder Aussage ehrlich ein. Die Ampel pro Thema verbindet deine Einschätzung mit deinen Quizergebnissen. Unten steht, was du als Nächstes üben solltest.</p>
+    </div>
+    <div class="panel" id="recs-panel">
+      <h2>Dein Lernplan</h2>
+      <div class="recs" id="recs"></div>
+    </div>
+    <div class="comp" id="comp"></div>
+    <div class="panel">
+      <h3>Fortschritt zurücksetzen</h3>
+      <p class="note">Löscht Quizergebnisse, Kartenstand und Selbsteinschätzung in diesem Browser.</p>
+      <div id="reset-zone"><button class="btn ghost" id="reset-ask">Zurücksetzen …</button></div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ---------- Inhalte ---------- */
+const TOPICS = [
+  {id:"kreislauf", name:"Wirtschaftskreislauf"},
+  {id:"bip", name:"Bruttoinlandsprodukt"},
+  {id:"konjunktur", name:"Konjunkturphasen"},
+  {id:"ziele", name:"Wirtschaftspolitische Ziele"},
+  {id:"arbeit", name:"Arbeitslosigkeit"},
+  {id:"inflation", name:"Inflation"},
+  {id:"aussen", name:"Außenbeitrag"},
+  {id:"massnahmen", name:"Maßnahmen bewerten"},
+  {id:"analyse", name:"Datenanalyse"}
+];
+const TNAME = Object.fromEntries(TOPICS.map(t=>[t.id,t.name]));
+
+/* Übungsdaten: fiktiver Staat, bewusst andere Lage als in der Klausur */
+const NORD = {
+  caption:"Übungsmaterial: ausgewählte Konjunkturdaten des fiktiven Staates Nordalien",
+  head:["Indikator","2024","2025","2026"],
+  rows:[
+    ["reales BIP (Veränderung ggü. Vorjahr, in %)","+1,8","+3,2","+3,9"],
+    ["nominales BIP (in Mrd. €)","2.000","2.110","2.240"],
+    ["abh. zivile Erwerbstätige (in Mio.)","30,2","30,6","30,9"],
+    ["Arbeitslose (in Mio.)","1,6","1,3","1,1"],
+    ["Kapazitätsauslastung Industrie (in %)","84","89","93"],
+    ["reale Investitionen (Veränderung in %)","+2,0","+4,5","+5,0"],
+    ["realer privater Verbrauch (Veränderung in %)","+1,5","+2,4","+2,8"],
+    ["Exporte (in Mrd. €)","900","950","980"],
+    ["Importe (in Mrd. €)","860","905","960"],
+    ["Verbraucherpreisindex (Veränderung in %)","+2,1","+2,9","+4,1"]
+  ]
+};
+
+/* type: mc (a = Index der richtigen Antwort) oder num (answer, tol, unit) */
+const QUESTIONS = [
+ // Wirtschaftskreislauf
+ {t:"kreislauf",q:"Welche Akteure gehören zum erweiterten Wirtschaftskreislauf ohne Ausland?",o:["Private Haushalte, Unternehmen, Staat, Geschäftsbanken","Private Haushalte, Unternehmen, Staat, Europäische Zentralbank","Private Haushalte, Unternehmen, Ausland, Staat","Unternehmen, Staat, Gewerkschaften, Geschäftsbanken"],a:0,e:"Im ersten Schritt betrachten wir Haushalte, Unternehmen, Staat und Geschäftsbanken. Das Ausland und die EZB werden im Laufe der Qualifikationsphase ergänzt."},
+ {t:"kreislauf",q:"Private Haushalte stellen den Unternehmen Arbeit, Kapital und Boden zur Verfügung. Welcher Geldstrom fließt dafür zurück?",o:["Steuern","Löhne, Gehälter, Pacht und Dividenden","Transferzahlungen","Kredite"],a:1,e:"Für die Produktionsfaktoren erhalten die Haushalte Faktoreinkommen: Löhne und Gehälter für Arbeit, Pacht für Boden, Dividenden und Zinsen für Kapital."},
+ {t:"kreislauf",q:"Was sind Transferzahlungen (Sozialtransfers)?",o:["Zahlungen der Unternehmen an den Staat","Zahlungen des Staates an private Haushalte, z. B. Kindergeld, Wohngeld oder Arbeitslosengeld","Kredite der Geschäftsbanken an Haushalte","Zahlungen zwischen zwei Unternehmen"],a:1,e:"Transferzahlungen fließen vom Staat an private Haushalte, z. B. Kindergeld, Wohngeld oder Arbeitslosengeld. Die Begriffe Transferzahlungen, Transferleistungen und Sozialtransfers werden synonym verwendet."},
+ {t:"kreislauf",q:"Was ist in der Volkswirtschaftslehre mit „Staat“ gemeint?",o:["Ein Land, z. B. Deutschland","Die politisch handelnde Einheit, z. B. Bundesregierung, Landesregierung oder eine Kommune","Alle Unternehmen eines Landes","Die Europäische Zentralbank"],a:1,e:"Ein Land nennen wir genauer Nationalstaat. In der VWL meint „Staat“ die politische Ebene, die handelt: Bund, Länder und Gemeinden."},
+ {t:"kreislauf",q:"Die EZB erhöht die Leitzinsen, die Geschäftsbanken verteuern daraufhin ihre Kredite. Welche Wirkung ist am wahrscheinlichsten?",o:["Unternehmen investieren weniger, weil Kredite teurer werden","Der Staat zahlt mehr Kindergeld","Die Exporte steigen sofort stark","Die Löhne steigen sofort"],a:0,e:"Wirkungskette: höhere Zinsen → teurere Kredite → weniger kreditfinanzierte Investitionen und weniger Konsum auf Kredit → die Nachfrage sinkt."},
+ // BIP
+ {t:"bip",q:"Das BIP ist der Wert aller …",o:["Waren und Dienstleistungen, die in einem Jahr innerhalb der Landesgrenzen erwirtschaftet werden","Waren und Dienstleistungen, die von Inländern weltweit erwirtschaftet werden","exportierten Waren eines Jahres","Produktionswerte aller Branchen einschließlich der Vorleistungen"],a:0,e:"Das BIP folgt dem Inlandsprinzip: Es zählt, was innerhalb der Landesgrenzen erwirtschaftet wird, egal wer es erwirtschaftet."},
+ {t:"bip",q:"Eine Französin arbeitet in Düsseldorf. Zählt ihre Leistung zum deutschen BIP?",o:["Ja, weil sie innerhalb Deutschlands erbracht wird","Nein, weil sie keine Inländerin ist","Nur, wenn sie in Deutschland Steuern zahlt","Nur zur Hälfte"],a:0,e:"Inlandsprinzip: Leistungen von Ausländer:innen in Deutschland zählen zum deutschen BIP. Leistungen von Deutschen im Ausland zählen nicht."},
+ {t:"bip",q:"Warum werden Vorleistungen (z. B. Elektronikteile für ein Auto) im BIP nicht mitgezählt?",o:["Weil sie aus dem Ausland kommen","Weil sie sonst mehrfach gezählt würden und die Wirtschaftsleistung zu hoch ausgewiesen wäre","Weil sie steuerfrei sind","Weil sie keinen Wert haben"],a:1,e:"Die Wertschöpfung ist der Produktionswert minus Vorleistungen. Würde man alle Produktionswerte addieren, wären die Teile mehrfach enthalten."},
+ {t:"bip",q:"Welche Formel beschreibt die Verwendungsrechnung des BIP?",o:["Arbeitnehmerentgelte + Unternehmensgewinne + Vermögenserträge","Summe der Wertschöpfung aller Wirtschaftsbereiche","Privater Konsum + Staatskonsum + Investitionen + Außenbeitrag","Exporte − Importe"],a:2,e:"Verwendungsrechnung: Wofür wird das BIP verwendet? Die erste Antwort beschreibt die Verteilungsrechnung, die zweite die Entstehungsrechnung."},
+ {t:"bip",q:"Das nominale BIP steigt um 3 %, die Preise steigen ebenfalls um etwa 3 %. Wie entwickelt sich das reale BIP ungefähr?",o:["Es steigt um 6 %","Es steigt um 3 %","Es bleibt ungefähr gleich (rund 0 %)","Es sinkt um 3 %"],a:2,e:"Faustregel: reales Wachstum ≈ nominales Wachstum − Preissteigerung. Der Zuwachs kommt hier nur durch höhere Preise zustande, nicht durch mehr Produktion. (Vereinfachung: Statistisch wird mit dem BIP-Deflator gerechnet, nicht mit dem VPI.)"},
+ {t:"bip",q:"Warum vergleicht man das Wirtschaftswachstum in der Regel mit dem realen BIP?",o:["Weil es immer höher ist","Weil Preisänderungen herausgerechnet sind und so nur die Veränderung der Produktion sichtbar wird","Weil es die Exporte nicht enthält","Weil es nur einmal pro Jahrzehnt berechnet wird"],a:1,e:"Das reale BIP wird zu konstanten Preisen eines Basisjahres berechnet. So verfälscht Inflation den Vergleich nicht."},
+ // Konjunktur
+ {t:"konjunktur",q:"In welcher Reihenfolge laufen die Phasen des idealtypischen Konjunkturzyklus ab?",o:["Aufschwung → Boom → Abschwung → Konjunkturtief","Boom → Aufschwung → Konjunkturtief → Abschwung","Aufschwung → Abschwung → Boom → Konjunkturtief","Konjunkturtief → Boom → Aufschwung → Abschwung"],a:0,e:"Expansion (Aufschwung) → Hochkonjunktur (Boom) → Rezession (Abschwung) → Depression (Konjunkturtief), danach beginnt ein neuer Aufschwung."},
+ {t:"konjunktur",q:"„Die Kapazitäten sind voll ausgelastet, es entsteht ein Nachfrageüberschuss, die Preise steigen, die Arbeitslosigkeit ist sehr niedrig.“ Welche Phase wird beschrieben?",o:["Aufschwung","Boom","Abschwung","Konjunkturtief"],a:1,e:"Typisch für den Boom: volle Auslastung, Engpässe, steigende Preise und Löhne, weil Unternehmen um Arbeitskräfte konkurrieren."},
+ {t:"konjunktur",q:"Woran erkennt man laut AB03 eine Rezession?",o:["Die Inflationsrate liegt über 2 %","Das reale BIP ist in zwei aufeinanderfolgenden Quartalen nicht gewachsen oder gesunken","Die Arbeitslosenquote liegt über 5 %","Die Exporte sinken in einem Monat"],a:1,e:"Zwei Quartale in Folge ohne Wachstum oder mit Rückgang des realen BIP. Diese Definition wird auch „technische Rezession“ genannt."},
+ {t:"konjunktur",q:"Das reale BIP wächst erst um 3 %, dann nur noch um 1 %. Wie ordnest du das ein?",o:["Es liegt sicher eine Rezession vor, weil das Wachstum sinkt","Die Wirtschaft befindet sich im Boom","Das Wachstum schwächt sich ab (beginnender Abschwung). Eine Rezession im Sinne von zwei Quartalen ohne Wachstum lässt sich daraus aber noch nicht ablesen","Die Wirtschaft befindet sich im Konjunkturtief"],a:2,e:"Sinkende, aber positive Wachstumsraten sind ein Zeichen für eine Abschwächung. Für eine Rezession muss das reale BIP stagnieren oder schrumpfen. Achte also genau darauf, ob die Werte noch positiv sind."},
+ {t:"konjunktur",q:"Warum ist die Preissteigerungsrate im Aufschwung noch gering?",o:["Weil der Staat die Preise festlegt","Weil noch freie Kapazitäten bestehen und Produktionsüberschüsse zunächst abgebaut werden","Weil niemand mehr konsumiert","Weil die Löhne sinken"],a:1,e:"Die Nachfrage steigt, kann aber zunächst aus freien Kapazitäten und Lagerbeständen bedient werden. Erst bei Engpässen im Boom steigen die Preise deutlich."},
+ {t:"konjunktur",q:"Was kann im Konjunkturtief einen neuen Aufschwung anstoßen?",o:["Sinkende Preise können die Konsumbereitschaft mittelfristig wieder erhöhen","Steigende Zinsen","Weitere Entlassungen","Höhere Steuern"],a:0,e:"Laut AB03 führt die geringe Nachfrage im Tief zu sinkenden Preisen, was den Konsum mittelfristig wieder anregen kann."},
+ {t:"konjunktur",q:"Welche Aussage über das Konjunkturzyklusmodell trifft zu?",o:["Die Phasen treten in der Realität immer genau gleich lang auf","Es ist ein vereinfachendes, idealtypisches Modell. Die strenge Abfolge ist in der Realität nicht immer feststellbar","Es gilt nur für Deutschland","Es sagt die Zukunft sicher voraus"],a:1,e:"Das Modell hilft, die Lage zu beschreiben. Externe Schocks wie Krisen oder Energiepreise können den Verlauf aber stören."},
+ // Ziele
+ {t:"ziele",q:"Welche vier Ziele nennt das Stabilitäts- und Wachstumsgesetz von 1967?",o:["Stabiles Preisniveau, hoher Beschäftigungsstand, außenwirtschaftliches Gleichgewicht, stetiges und angemessenes Wachstum","Stabiles Preisniveau, Umweltschutz, gerechte Verteilung, Vollbeschäftigung","Hohe Exporte, niedrige Steuern, stabiles Preisniveau, Wachstum","Ausgeglichener Haushalt, Vollbeschäftigung, Umweltschutz, Wachstum"],a:0,e:"Das sind die Ziele des „magischen Vierecks“. Umweltschutz und gerechte Verteilung kamen erst mit dem magischen Sechseck dazu."},
+ {t:"ziele",q:"Warum heißt das Viereck „magisch“?",o:["Weil es von Zauberern erfunden wurde","Weil die Ziele in Konflikt zueinander stehen können und kaum alle gleichzeitig vollständig erreichbar sind","Weil alle Ziele automatisch erreicht werden","Weil es nur in Krisen gilt"],a:1,e:"Beispiel für einen Zielkonflikt: Hohe Beschäftigung und starkes Wachstum können zu steigenden Preisen führen."},
+ {t:"ziele",q:"Welche zwei Ziele ergänzen das magische Viereck zum magischen Sechseck?",o:["Gerechte Einkommens- und Vermögensverteilung sowie Schutz der Umwelt","Niedrige Steuern und hohe Exporte","Ausgeglichener Staatshaushalt und niedrige Zinsen","Hohe Löhne und Vollbeschäftigung"],a:0,e:"Zum magischen Viereck des StabG kamen später die gerechte Einkommens- und Vermögensverteilung und der Schutz der Umwelt hinzu."},
+ {t:"ziele",q:"Welcher Indikator und Zielwert gehören zum Ziel „stabiles Preisniveau“?",o:["Arbeitslosenquote, unter 3 %","Inflationsrate (Veränderung des VPI), ca. 2 %","Außenbeitrag, ca. 2 %","Reales BIP, ca. 2–3 %"],a:1,e:"Die EZB strebt mittelfristig eine Inflationsrate von 2 % an. Auch deutlich weniger oder sinkende Preise (Deflation) gelten als Zielverfehlung."},
+ {t:"ziele",q:"Welches Beispiel beschreibt einen Zielkonflikt?",o:["Mehr Wachstum führt zu mehr Beschäftigung","Im Boom führen hohe Nachfrage und knappe Arbeitskräfte zu steigenden Preisen","Sinkende Arbeitslosigkeit senkt die Staatsausgaben","Mehr Exporte erhöhen das BIP"],a:1,e:"Wachstum und Beschäftigung entwickeln sich hier gut, die Preisniveaustabilität gerät aber in Gefahr. Die anderen Beispiele beschreiben Zielharmonien."},
+ // Arbeitslosigkeit
+ {t:"arbeit",q:"Wie berechnet man die Arbeitslosenquote auf Basis der abhängigen zivilen Erwerbspersonen?",o:["Arbeitslose ÷ Erwerbstätige × 100","Arbeitslose ÷ (abh. zivile Erwerbstätige + Arbeitslose) × 100","Erwerbstätige ÷ Arbeitslose × 100","Arbeitslose ÷ Einwohner × 100"],a:1,e:"Im Nenner stehen die Erwerbspersonen, also Erwerbstätige und Arbeitslose zusammen."},
+ {t:"arbeit",type:"num",q:"Berechne die Arbeitslosenquote: 2,5 Mio. Arbeitslose, 40,0 Mio. abhängige zivile Erwerbstätige. (eine Nachkommastelle)",answer:5.9,tol:0.051,unit:"%",e:"2,5 ÷ (40,0 + 2,5) × 100 = 2,5 ÷ 42,5 × 100 ≈ 5,9 %"},
+ {t:"arbeit",q:"Frau Meyer möchte nach 15 Jahren wieder arbeiten, hat sich aber nicht bei der Arbeitsagentur gemeldet. Zählt sie in der Statistik als arbeitslos?",o:["Ja, weil sie Arbeit sucht","Nein, weil sie nicht arbeitslos gemeldet ist","Ja, aber nur zur Hälfte","Nein, weil sie Hausfrau war"],a:1,e:"Als arbeitslos zählt nur, wer sich persönlich arbeitslos gemeldet hat und der Vermittlung zur Verfügung steht. Menschen wie Frau Meyer bezeichnet man als „stille Reserve“."},
+ {t:"arbeit",q:"Frau Kurz ist in Kurzarbeit, die Arbeitsagentur ersetzt 60 % ihres Verdienstausfalls. Wie wird sie gezählt?",o:["Als arbeitslos","Als erwerbstätig","Gar nicht","Als Schülerin"],a:1,e:"Sie hat weiterhin ein Beschäftigungsverhältnis und ist erwerbstätig. Kurzarbeit soll in Krisen Entlassungen vermeiden."},
+ {t:"arbeit",q:"Sigrun M. arbeitet jedes Jahr nur für das Weihnachtsgeschäft einer Lichterkettenfirma. Welche Form der Arbeitslosigkeit liegt vor?",o:["Friktionelle","Saisonale","Konjunkturelle","Strukturelle"],a:1,e:"Saisonale Arbeitslosigkeit entsteht, weil manche Branchen nur zu bestimmten Jahreszeiten Arbeit haben."},
+ {t:"arbeit",q:"Horst G. verliert seine Stelle, weil der Zahlungsverkehr durch neue Technik zentralisiert wird. Welche Form liegt vor?",o:["Strukturelle bzw. technologische","Saisonale","Friktionelle","Konjunkturelle"],a:0,e:"Automatisierung und Strukturwandel lassen Arbeitsplätze dauerhaft wegfallen. Die Aussicht auf Wiedereinstellung ist gering."},
+ {t:"arbeit",q:"Sandro B. wird entlassen, weil Aufträge ausbleiben. Er hofft, bei besserer Wirtschaftslage wieder eingestellt zu werden. Welche Form liegt vor?",o:["Konjunkturelle","Saisonale","Merkmals-strukturelle","Systemische"],a:0,e:"Konjunkturelle Arbeitslosigkeit entsteht durch wirtschaftliche Schwankungen, besonders im Abschwung und im Konjunkturtief."},
+ {t:"arbeit",q:"Warum ist auch eine sehr niedrige Arbeitslosenquote volkswirtschaftlich kritisch?",o:["Weil dann der Staat zu viel Arbeitslosengeld zahlt","Weil Arbeitskräfte knapp werden, Löhne und Preise stark steigen können und Unternehmen kaum Personal finden","Weil dann die Exporte sinken","Weil dann das BIP sinkt"],a:1,e:"Etwas Übergangs- (friktionelle) Arbeitslosigkeit gibt es immer, z. B. beim Jobwechsel. Bei extremer Knappheit droht Lohn- und Preisdruck."},
+ // Inflation
+ {t:"inflation",q:"Was ist die Inflationsrate?",o:["Der Preis des Warenkorbs in Euro","Die prozentuale Veränderung des Verbraucherpreisindex gegenüber dem Vorjahr","Die Zahl der Güter im Warenkorb","Der Leitzins der EZB"],a:1,e:"Der VPI misst das Preisniveau (Basisjahr = 100). Seine Veränderung gegenüber dem Vorjahr in Prozent ist die Inflationsrate."},
+ {t:"inflation",q:"Was beschreibt das Wägungsschema?",o:["Wie schwer die Güter im Warenkorb sind","Wie stark eine Güterart nach ihrem Anteil an den Haushaltsausgaben in den VPI eingeht","Wie viele Geschäfte besucht werden","Wie hoch die Mehrwertsteuer ist"],a:1,e:"Beispiel: Wohnen und Energie haben ein großes Gewicht, Bildung ein kleines. Steigende Mieten wirken daher viel stärker auf den VPI."},
+ {t:"inflation",type:"num",q:"Der Warenkorb kostet im Basisjahr 50 €, heute 54 €. Wie hoch ist der VPI heute?",answer:108,tol:0.051,unit:"",e:"VPI = Preis heute ÷ Preis im Basisjahr × 100 = 54 ÷ 50 × 100 = 108"},
+ {t:"inflation",type:"num",q:"Der VPI steigt von 110,0 auf 115,5. Wie hoch ist die Inflationsrate? (eine Nachkommastelle)",answer:5.0,tol:0.051,unit:"%",e:"(115,5 − 110,0) ÷ 110,0 × 100 = 5,0 %. Häufiger Fehler: 115,5 − 100 = 15,5 %. Das wäre die Steigerung gegenüber dem Basisjahr, nicht gegenüber dem Vorjahr."},
+ {t:"inflation",q:"Der Döner wird deutlich teurer. Bedeutet das, dass die Inflation stark steigt?",o:["Ja, ein steigender Preis ist immer Inflation","Nein, ein Einzelpreis sagt wenig über das allgemeine Preisniveau. Entscheidend ist der gewichtete Durchschnitt aller Güter im Warenkorb","Ja, weil Döner sehr beliebt ist","Nein, weil Lebensmittel nicht im Warenkorb sind"],a:1,e:"Inflation ist ein allgemeiner und anhaltender Anstieg des Preisniveaus. Andere Preise können gleichzeitig stabil bleiben oder sinken."},
+ {t:"inflation",q:"Wen trifft eine hohe Inflation tendenziell besonders stark?",o:["Haushalte mit geringem Einkommen und Sparer:innen","Schuldner:innen","Haushalte mit hohem Einkommen, die viel sparen können","Niemanden, weil die Inflationsrate ein Durchschnitt ist"],a:0,e:"Haushalte mit geringem Einkommen geben einen großen Anteil für Miete, Energie und Nahrungsmittel aus und können kaum ausweichen. Ersparnisse verlieren an Kaufkraft, Schulden werden real kleiner."},
+ // Außenbeitrag
+ {t:"aussen",q:"Wie berechnet man den Außenbeitrag?",o:["Exporte + Importe","Exporte − Importe","Importe − Exporte","Exporte ÷ BIP"],a:1,e:"Ist der Außenbeitrag positiv, liegt ein Exportüberschuss vor. Ist er negativ, liegt ein Importüberschuss vor."},
+ {t:"aussen",type:"num",q:"Exporte: 1.800 Mrd. €, Importe: 1.650 Mrd. €, BIP: 4.500 Mrd. €. Wie hoch ist der Außenbeitrag in % des BIP? (eine Nachkommastelle)",answer:3.3,tol:0.051,unit:"%",e:"Außenbeitrag = 1.800 − 1.650 = 150 Mrd. €. In % des BIP: 150 ÷ 4.500 × 100 ≈ 3,3 %"},
+ {t:"aussen",q:"Welche Aussage nennt einen möglichen Nachteil eines dauerhaft hohen Exportüberschusses?",o:["Das Land ist stark von der Nachfrage aus dem Ausland abhängig, z. B. bei Zöllen oder Krisen in den Abnehmerländern","Es entstehen zu viele Arbeitsplätze","Die Inflation sinkt automatisch","Der Staat bekommt keine Steuereinnahmen mehr"],a:0,e:"Weitere Kritikpunkte: Andere Länder müssen sich für ihre Importe verschulden, es drohen Handelskonflikte. Vorteile sind z. B. Arbeitsplätze in der Exportindustrie."},
+ {t:"aussen",q:"Die Exporte sinken stark, die Importe bleiben fast gleich. Was passiert mit dem Außenbeitrag?",o:["Er steigt","Er sinkt","Er bleibt gleich","Er wird automatisch null"],a:1,e:"Weniger Exporte bei gleichen Importen verkleinern die Differenz Exporte − Importe. Das spricht für eine schwächere Auslandsnachfrage."},
+ // Maßnahmen
+ {t:"massnahmen",q:"Welche Fragen gehören zum Kriterium Effizienz?",o:["Ist die Maßnahme gerecht und wird sie akzeptiert?","Ist die Maßnahme wirksam, stehen Kosten und Nutzen in einem angemessenen Verhältnis, ist sie finanzierbar?","Ist sie umweltverträglich und moralisch vertretbar?","Wer hat die Maßnahme vorgeschlagen?"],a:1,e:"Effizienz: Wirksamkeit, Kosten-Nutzen, Finanzierbarkeit. Legitimität: Gerechtigkeit (z. B. generationen-, leistungs-, chancen- oder bedarfsgerecht), Akzeptanz, Umweltverträglichkeit."},
+ {t:"massnahmen",q:"Eine Maßnahme wird über neue Kredite finanziert. Welches Legitimitätskriterium ist dann besonders betroffen?",o:["Generationengerechtigkeit","Leistungsgerechtigkeit","Wirksamkeit","Akzeptanz der Unternehmen"],a:0,e:"Künftige Generationen müssen die Schulden zurückzahlen bzw. die Zinsen tragen."},
+ {t:"massnahmen",q:"Kritiker:innen nennen einen allgemeinen Tankrabatt ein „Gießkannenprinzip“. Was ist gemeint?",o:["Er hilft nur Gärtnereien","Alle werden entlastet, unabhängig vom Bedarf. Wer viel fährt, profitiert absolut am meisten","Er wird nur in Regionen mit wenig Regen gezahlt","Er kostet den Staat nichts"],a:1,e:"Gezielte Entlastungen würden bei besonders betroffenen Gruppen ansetzen. Das ist ein typisches Argument zur Bedarfsgerechtigkeit."},
+ {t:"massnahmen",q:"Welche Aussage ist eine vollständige Wirkungskette zu einer Mindestlohnerhöhung?",o:["Der Mindestlohn steigt.","Der Mindestlohn steigt → Geringverdienende haben mehr Einkommen → sie konsumieren mehr → die private Nachfrage steigt","Der Mindestlohn ist gerecht.","Die Unternehmen sind dagegen."],a:1,e:"Eine Wirkungskette verbindet Maßnahme, betroffene Akteure und Auswirkung auf einen Indikator. Gegenkette: höhere Lohnkosten → ggf. höhere Preise oder weniger Einstellungen."},
+ {t:"massnahmen",q:"Die Wirtschaft ist in einer Rezession. Welche staatliche Reaktion entspricht einer antizyklischen Politik?",o:["Der Staat kürzt seine Investitionen","Der Staat erhöht seine Ausgaben, z. B. für Investitionen, um die Nachfrage zu stützen","Der Staat erhöht die Steuern stark","Der Staat tut grundsätzlich nichts"],a:1,e:"Antizyklisch heißt: in der Krise gegensteuern, also Nachfrage stützen, im Boom bremsen. Das kann allerdings die Staatsverschuldung erhöhen."},
+ // Datenanalyse (Nordalien)
+ {t:"analyse",table:true,q:"In welcher Phase des Konjunkturzyklus befindet sich Nordalien 2026?",o:["Aufschwung","Boom (Hochkonjunktur)","Abschwung","Konjunkturtief"],a:1,e:"Starkes und steigendes Wachstum (3,9 %), sehr hohe Kapazitätsauslastung (93 %), sinkende Arbeitslosigkeit, steigende Investitionen und deutlich steigende Preise (4,1 %) sprechen für einen Boom."},
+ {t:"analyse",table:true,type:"num",q:"Berechne die Arbeitslosenquote Nordaliens im Jahr 2026. (eine Nachkommastelle)",answer:3.4,tol:0.051,unit:"%",e:"1,1 ÷ (30,9 + 1,1) × 100 = 1,1 ÷ 32,0 × 100 ≈ 3,4 %"},
+ {t:"analyse",table:true,type:"num",q:"Berechne den Außenbeitrag Nordaliens 2026 in % des BIP. (eine Nachkommastelle)",answer:0.9,tol:0.051,unit:"%",e:"Außenbeitrag = 980 − 960 = 20 Mrd. €. In % des BIP: 20 ÷ 2.240 × 100 ≈ 0,9 %"},
+ {t:"analyse",table:true,q:"Welches Ziel des StabG verfehlt Nordalien 2026 am deutlichsten?",o:["Hoher Beschäftigungsstand","Stabiles Preisniveau","Angemessenes Wachstum, weil es zu niedrig ist","Außenwirtschaftliches Gleichgewicht, weil ein hoher Importüberschuss besteht"],a:1,e:"Mit 4,1 % liegt die Inflationsrate deutlich über dem Zielwert von ca. 2 %. Das Wachstum ist eher zu hoch als zu niedrig, der Außenbeitrag ist leicht positiv."},
+ {t:"analyse",table:true,q:"Warum steigen die Importe Nordaliens 2026 stärker als die Exporte?",o:["Weil die Kapazitäten im Inland ausgelastet sind und steigende Preise das Einkaufen im Ausland attraktiver machen","Weil die Arbeitslosigkeit steigt","Weil der Konsum sinkt","Weil die Investitionen einbrechen"],a:0,e:"Laut AB03 wird im Boom das Einkaufen im Ausland vergleichsweise günstiger, die Importe nehmen zu. Der Außenbeitrag schrumpft."},
+  
+];
+
+const CARDS = [
+ {t:"kreislauf",f:"Erweiterter Wirtschaftskreislauf",b:"Modell der Geld- und Güterströme zwischen privaten Haushalten, Unternehmen, Staat und Geschäftsbanken; später ergänzt um Ausland und EZB."},
+ {t:"kreislauf",f:"Transferzahlungen",b:"Zahlungen des Staates an private Haushalte, z. B. Kindergeld, Wohngeld, Arbeitslosengeld. Synonym: Transferleistungen, Sozialtransfers."},
+ {t:"kreislauf",f:"Staat (in der VWL)",b:"Die politisch handelnde Einheit: Bund, Länder, Gemeinden (z. B. Bundesregierung, Bürgermeisterin). Ein Land heißt genauer Nationalstaat."},
+ {t:"kreislauf",f:"Wirkungskette",b:"Begründete Abfolge von Ursache und Wirkung zwischen Akteuren, z. B. höhere Zinsen → teurere Kredite → weniger Investitionen → weniger Produktion."},
+ {t:"bip",f:"Bruttoinlandsprodukt (BIP)",b:"Wert aller Waren und Dienstleistungen, die in einem Jahr innerhalb der Landesgrenzen erwirtschaftet werden (ohne Vorleistungen)."},
+ {t:"bip",f:"Inlandsprinzip",b:"Zum BIP zählt, was im Inland erwirtschaftet wird, auch von Ausländer:innen. Leistungen von Inländer:innen im Ausland zählen nicht."},
+ {t:"bip",f:"Wertschöpfung",b:"Produktionswert einer Branche minus Vorleistungen aus anderen Branchen. Die Summe aller Wertschöpfungen ergibt das BIP (Entstehungsrechnung)."},
+ {t:"bip",f:"Entstehungs-, Verwendungs-, Verteilungsrechnung",b:"Entstehung: Wertschöpfung der Wirtschaftsbereiche. Verwendung: Konsum privat + Staat + Investitionen + Außenbeitrag. Verteilung: Arbeitnehmerentgelte + Unternehmensgewinne + Vermögenserträge."},
+ {t:"bip",f:"Nominales vs. reales BIP",b:"Nominal: zu aktuellen Marktpreisen. Real: zu konstanten Preisen eines Basisjahres, also ohne Preiseffekte. Für Wachstumsvergleiche nutzt man das reale BIP."},
+ {t:"konjunktur",f:"Konjunktur",b:"Die gesamtwirtschaftliche Lage zu einem bestimmten Zeitpunkt, abgebildet durch Indikatoren. Übergeordneter Maßstab ist das BIP."},
+ {t:"konjunktur",f:"Aufschwung (Expansion)",b:"Beschäftigung, Einkommen, Investitionen, Produktion und Konsum steigen; Kapazitäten werden besser ausgelastet; Preise steigen noch kaum."},
+ {t:"konjunktur",f:"Boom (Hochkonjunktur)",b:"Kapazitäten voll ausgelastet, Engpässe, Nachfrageüberschuss; Preise und Löhne steigen; sehr niedrige Arbeitslosigkeit; Importe nehmen zu."},
+ {t:"konjunktur",f:"Abschwung (Rezession)",b:"Nachfrage und Auslastung sinken, Investitionen werden verschoben, Produktion und Beschäftigung sinken; Preissteigerung lässt nach. Rezession: reales BIP zwei Quartale in Folge ohne Wachstum."},
+ {t:"konjunktur",f:"Konjunkturtief (Depression)",b:"Sehr geringe Nachfrage, Investitionen und Gewinne; Entlassungen und Pleiten; sinkende Preise (Deflationsgefahr) können den Konsum mittelfristig wieder anregen."},
+ {t:"ziele",f:"Stabilitäts- und Wachstumsgesetz (1967)",b:"Verpflichtet Bund und Länder auf: stabiles Preisniveau, hohen Beschäftigungsstand, außenwirtschaftliches Gleichgewicht sowie stetiges und angemessenes Wirtschaftswachstum."},
+ {t:"ziele",f:"Magisches Viereck",b:"Die vier Ziele des StabG. „Magisch“, weil sie in Konflikt zueinander stehen können und kaum gleichzeitig vollständig erreichbar sind."},
+ {t:"ziele",f:"Magisches Sechseck",b:"Viereck plus gerechte Einkommens- und Vermögensverteilung und Schutz der Umwelt."},
+ {t:"ziele",f:"Zielwerte (im Unterricht)",b:"Wachstum real ca. 2–3 %; Arbeitslosenquote unter ca. 3 %; Inflationsrate ca. 2 %; Außenbeitrag ausgeglichen bzw. leichter Exportüberschuss (in % des BIP)."},
+ {t:"ziele",f:"Zielkonflikt vs. Zielharmonie",b:"Konflikt: ein Ziel gefährdet ein anderes (z. B. Boom → Preisanstieg). Harmonie: Ziele fördern sich gegenseitig (z. B. Wachstum → Beschäftigung)."},
+ {t:"arbeit",f:"Arbeitslos (nach SGB)",b:"Ohne Beschäftigung von 15 Wochenstunden oder mehr, sucht eine versicherungspflichtige Stelle, steht der Vermittlung zur Verfügung und ist persönlich arbeitslos gemeldet."},
+ {t:"arbeit",f:"Arbeitslosenquote",b:"Arbeitslose ÷ (abhängige zivile Erwerbstätige + Arbeitslose) × 100. Erwerbspersonen = Erwerbstätige + Arbeitslose."},
+ {t:"arbeit",f:"Stille Reserve",b:"Menschen, die arbeiten würden, sich aber nicht arbeitslos melden, z. B. aus Entmutigung. Sie fehlen in der Arbeitslosenstatistik."},
+ {t:"arbeit",f:"Friktionelle Arbeitslosigkeit",b:"Übergangsarbeitslosigkeit, z. B. zwischen zwei Jobs."},
+ {t:"arbeit",f:"Saisonale Arbeitslosigkeit",b:"Entsteht, weil manche Branchen nur zu bestimmten Jahreszeiten Arbeit haben (Bau, Tourismus, Weihnachtsgeschäft)."},
+ {t:"arbeit",f:"Merkmals-strukturelle Arbeitslosigkeit",b:"„Mismatch“: Die Qualifikation oder ein Merkmal der Arbeitnehmenden passt nicht zu den Anforderungen der Arbeitgeber."},
+ {t:"arbeit",f:"Strukturelle / technologische Arbeitslosigkeit",b:"Arbeitsplätze fallen durch Automatisierung oder Strukturwandel dauerhaft weg."},
+ {t:"arbeit",f:"Konjunkturelle Arbeitslosigkeit",b:"Entsteht durch wirtschaftliche Schwankungen, vor allem in Rezession und Depression."},
+ {t:"inflation",f:"Warenkorb",b:"Repräsentative, über die Zeit gleich zusammengesetzte Auswahl von rund 600 Güterarten, die ein typischer Haushalt kauft."},
+ {t:"inflation",f:"Wägungsschema",b:"Gewichtung der Güterarten nach ihrem Anteil an den Haushaltsausgaben. Wohnen und Energie wiegen schwer, Bildung leicht."},
+ {t:"inflation",f:"Verbraucherpreisindex (VPI)",b:"Preis des Warenkorbs im Verhältnis zum Basisjahr × 100 (Basisjahr = 100). Kennzahl für das Preisniveau."},
+ {t:"inflation",f:"Inflationsrate",b:"Prozentuale Veränderung des VPI gegenüber dem Vorjahr: (VPI neu − VPI alt) ÷ VPI alt × 100."},
+ {t:"inflation",f:"Deflation",b:"Anhaltend sinkendes Preisniveau (negative Inflationsrate). Gefahr: Konsum wird aufgeschoben, Nachfrage und Investitionen sinken weiter."},
+ {t:"aussen",f:"Außenbeitrag",b:"Exporte − Importe. Positiv = Exportüberschuss, negativ = Importüberschuss."},
+ {t:"aussen",f:"Außenbeitrag in % des BIP",b:"Außenbeitrag ÷ BIP × 100. Macht Länder und Jahre vergleichbar."},
+ {t:"aussen",f:"Exportüberschuss: Vor- und Nachteile",b:"Vorteile: Arbeitsplätze, Wachstum, Wettbewerbsfähigkeit. Nachteile: Abhängigkeit vom Ausland (Zölle, Krisen), Handelskonflikte, Verschuldung der Partnerländer."},
+ {t:"massnahmen",f:"Effizienz",b:"Ist die Maßnahme wirksam? Stehen Kosten und Nutzen im Verhältnis? Ist sie finanzierbar?"},
+ {t:"massnahmen",f:"Legitimität",b:"Ist die Maßnahme gerecht (generationen-, leistungs-, chancen-, bedarfsgerecht), moralisch vertretbar, akzeptiert und umweltverträglich?"},
+ {t:"massnahmen",f:"Wirkungsmatrix",b:"Einschätzung, wie eine Maßnahme Beschäftigung, Produktion, Investitionen, Konsum, Preise, Staatsverschuldung und Außenbeitrag verändert (++ bis – –), jeweils mit Begründung."},
+ {t:"massnahmen",f:"Antizyklische Politik",b:"Der Staat steuert gegen den Konjunkturverlauf: in der Krise Nachfrage stützen (mehr Ausgaben, Entlastungen), im Boom bremsen."},
+ {t:"analyse",f:"Sachverständigenrat",b:"Gremium der „Wirtschaftsweisen“ seit 1963 mit fünf Mitgliedern; berät die Politik wissenschaftlich und legt jedes Jahr im November ein Jahresgutachten vor."},
+ {t:"analyse",f:"Prozentuale Veränderung",b:"(Endwert − Anfangswert) ÷ Anfangswert × 100"}
+];
+
+const COMPS = [
+ {id:"k1",t:"kreislauf",s:"Ich kann die Akteure und die Geld- und Güterströme des erweiterten Wirtschaftskreislaufs erklären."},
+ {id:"k2",t:"kreislauf",s:"Ich kann zu einem Fallbeispiel (z. B. Zinserhöhung, Sondervermögen) eine Wirkungskette zwischen den Akteuren formulieren."},
+ {id:"b1",t:"bip",s:"Ich kann das BIP definieren und das Inlandsprinzip erklären."},
+ {id:"b2",t:"bip",s:"Ich kann den Unterschied zwischen nominalem und realem BIP erklären und in Daten erkennen."},
+ {id:"c1",t:"konjunktur",s:"Ich kann die vier Konjunkturphasen anhand von Beschäftigung, Produktion, Investitionen, Konsum und Preisen beschreiben."},
+ {id:"c2",t:"konjunktur",s:"Ich kann Konjunkturdaten begründet einer Phase zuordnen und die Grenzen des Modells benennen."},
+ {id:"z1",t:"ziele",s:"Ich kann die vier Ziele des StabG mit ihren Indikatoren und Zielwerten darstellen."},
+ {id:"z2",t:"ziele",s:"Ich kann die Erweiterung zum magischen Sechseck und Zielkonflikte an Beispielen erläutern."},
+ {id:"a1",t:"arbeit",s:"Ich kann die Arbeitslosenquote berechnen und erklären, wer statistisch als arbeitslos zählt."},
+ {id:"a2",t:"arbeit",s:"Ich kann Formen der Arbeitslosigkeit unterscheiden und Fallbeispielen zuordnen."},
+ {id:"i1",t:"inflation",s:"Ich kann erklären, wie die Inflationsrate gemessen wird (Warenkorb, Wägungsschema, VPI), und sie berechnen."},
+ {id:"i2",t:"inflation",s:"Ich kann erklären, warum Inflation Haushalte unterschiedlich stark trifft."},
+ {id:"x1",t:"aussen",s:"Ich kann den Außenbeitrag absolut und in % des BIP berechnen und das außenwirtschaftliche Gleichgewicht bewerten."},
+ {id:"m1",t:"massnahmen",s:"Ich kann begründete Hypothesen zu den Auswirkungen einer Maßnahme auf mehrere Indikatoren entwickeln."},
+ {id:"m2",t:"massnahmen",s:"Ich kann eine Maßnahme nach Effizienz- und Legitimitätskriterien bewerten und zu einem begründeten Urteil kommen."},
+ {id:"d1",t:"analyse",s:"Ich kann Konjunkturdaten aus einer Tabelle beschreiben, fehlende Werte berechnen und die Entwicklung erklären."}
+];
+
+/* ---------- Speicher (nur dieser Browser) ---------- */
+const KEY="wwt-q1-v1";
+let S={quiz:{},cards:{},self:{},rounds:0};
+try{const raw=localStorage.getItem(KEY); if(raw){S=Object.assign(S,JSON.parse(raw));}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ---------- Helfer ---------- */
+const $=s=>document.querySelector(s);
+function el(tag,attrs={},...kids){const n=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k==="class")n.className=v;else if(k==="text")n.textContent=v;else if(k.startsWith("on"))n.addEventListener(k.slice(2),v);else n.setAttribute(k,v);}for(const c of kids){if(c==null)continue;n.append(c.nodeType?c:document.createTextNode(c));}return n;}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pct(r,t){return t?Math.round(r/t*100):null;}
+function fmt(n){return String(n).replace(".",",");}
+function tableEl(){
+  const t=el("table");t.append(el("caption",{text:NORD.caption}));
+  const th=el("thead");const tr=el("tr");NORD.head.forEach(h=>tr.append(el("th",{text:h})));th.append(tr);t.append(th);
+  const tb=el("tbody");NORD.rows.forEach(r=>{const row=el("tr");r.forEach(c=>row.append(el("td",{text:c})));tb.append(row);});t.append(tb);
+  return el("div",{class:"datatbl"},t);
+}
+function chipGroup(container,selected,onChange,{allLabel="Alle Themen"}={}){
+  container.innerHTML="";
+  const all=el("button",{class:"chip","aria-pressed":String(selected.size===0)},allLabel);
+  all.addEventListener("click",()=>{selected.clear();onChange();});
+  container.append(all);
+  TOPICS.forEach(t=>{
+    const b=el("button",{class:"chip","aria-pressed":String(selected.has(t.id))},t.name);
+    b.addEventListener("click",()=>{selected.has(t.id)?selected.delete(t.id):selected.add(t.id);onChange();});
+    container.append(b);
+  });
+}
+
+/* ---------- Routing ---------- */
+const VIEWS=["start","quiz","karten","check"];
+function route(){
+  let v=(location.hash||"#start").slice(1); if(!VIEWS.includes(v)) v="start";
+  VIEWS.forEach(x=>{$("#v-"+x).hidden=(x!==v);});
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.setAttribute("aria-current",a.dataset.view===v?"page":"false"));
+  if(v==="start") renderStart();
+  if(v==="karten") renderCards();
+  if(v==="check") renderCheck();
+  if(v==="quiz" && !quiz.active) renderQuizSetup();
+  window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+
+/* ---------- Start ---------- */
+function totals(){
+  let r=0,t=0;Object.values(S.quiz).forEach(x=>{r+=x.r;t+=x.t;});
+  const known=Object.values(S.cards).filter(v=>v==="known").length;
+  const rated=Object.keys(S.self).length;
+  return {r,t,known,rated};
+}
+function renderStart(){
+  const x=totals();
+  $("#t-quiz").textContent=x.t?`${x.r} von ${x.t} richtig (${pct(x.r,x.t)} %)`:`${QUESTIONS.length} Fragen`;
+  $("#t-cards").textContent=`${x.known} von ${CARDS.length} Karten sitzen`;
+  $("#t-check").textContent=`${x.rated} von ${COMPS.length} Aussagen eingeschätzt`;
+}
+
+/* ---------- Quiz ---------- */
+const quiz={active:false,sel:new Set(),list:[],i:0,right:0,log:[]};
+function poolFor(sel){return QUESTIONS.map((q,idx)=>({...q,idx})).filter(q=>sel.size===0||sel.has(q.t));}
+function renderQuizSetup(){
+  $("#quiz-setup").hidden=false;$("#quiz-run").hidden=true;
+  chipGroup($("#quiz-topics"),quiz.sel,renderQuizSetup);
+  const n=poolFor(quiz.sel).length;
+  $("#quiz-avail").textContent=`${n} Fragen in deiner Auswahl.`;
+  $("#quiz-start").disabled=n===0;
+}
+$("#quiz-start").addEventListener("click",()=>startQuiz(shuffle(poolFor(quiz.sel)).slice(0,+$("#quiz-len").value)));
+function startQuiz(list){
+  quiz.active=true;quiz.list=list;quiz.i=0;quiz.right=0;quiz.log=[];
+  $("#quiz-setup").hidden=true;$("#quiz-run").hidden=false;
+  if(location.hash!=="#quiz") location.hash="quiz";
+  showQ();
+}
+function record(q,ok){
+  const s=S.quiz[q.t]||(S.quiz[q.t]={r:0,t:0});s.t++;if(ok)s.r++;save();
+  quiz.log.push({q,ok});if(ok)quiz.right++;
+}
+function showQ(){
+  const box=$("#quiz-run");box.innerHTML="";
+  const q=quiz.list[quiz.i];
+  const card=el("div",{class:"qcard"});
+  const bar=el("div",{class:"progress"},el("i"));bar.firstChild.style.width=(quiz.i/quiz.list.length*100)+"%";
+  card.append(
+    el("div",{class:"qhead"},el("span",{class:"tag",text:TNAME[q.t]}),el("span",{class:"counts",text:`Frage ${quiz.i+1} von ${quiz.list.length}`})),
+    bar
+  );
+  if(q.table) card.append(tableEl());
+  card.append(el("p",{class:"prompt",text:q.q}));
+  const fb=el("div");fb.hidden=true;
+  const next=el("button",{class:"btn",text:quiz.i+1<quiz.list.length?"Nächste Frage":"Auswertung ansehen"});next.hidden=true;
+  next.addEventListener("click",()=>{quiz.i++;quiz.i<quiz.list.length?showQ():showResult();});
+  function feedback(ok,extra){
+    fb.hidden=false;fb.className="feedback "+(ok?"ok":"no");
+    fb.innerHTML="";fb.append(el("b",{text:ok?"Richtig.":"Noch nicht ganz."}));
+    if(extra) fb.append(el("span",{text:extra}));
+    fb.append(el("span",{text:q.e}));
+    next.hidden=false;next.focus();
+  }
+  if(q.type==="num"){
+    const inp=el("input",{id:"num-"+q.idx,inputmode:"decimal",autocomplete:"off","aria-label":"Deine Antwort"});
+    const go=el("button",{class:"btn",text:"Prüfen"});
+    const row=el("div",{class:"numrow"},inp,q.unit?el("span",{class:"unit",text:q.unit}):null,go);
+    const check=()=>{
+      let raw=inp.value.replace(/\s/g,"");raw=raw.includes(",")?raw.replace(/\./g,"").replace(",","."):raw;const v=parseFloat(raw);
+      if(isNaN(v)){inp.focus();return;}
+      const ok=Math.abs(v-q.answer)<=q.tol;
+      record(q,ok);inp.disabled=true;go.disabled=true;
+      feedback(ok,ok?null:`Richtig wäre: ${fmt(q.answer)}${q.unit?" "+q.unit:""}.`);
+    };
+    go.addEventListener("click",check);inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
+    card.append(row);setTimeout(()=>inp.focus(),0);
+  }else{
+    const order=shuffle(q.o.map((txt,k)=>({txt,k})));
+    const opts=el("div",{class:"opts"});
+    order.forEach((o,pos)=>{
+      const b=el("button",{class:"opt"},el("span",{class:"k",text:"ABCD"[pos]}),el("span",{text:o.txt}));
+      b.addEventListener("click",()=>{
+        const ok=o.k===q.a;record(q,ok);
+        [...opts.children].forEach((c,j)=>{c.disabled=true;if(order[j].k===q.a)c.classList.add("right");});
+        if(!ok)b.classList.add("wrong");
+        feedback(ok);
+      });
+      opts.append(b);
+    });
+    card.append(opts);
+  }
+  card.append(fb,el("div",{class:"row"},next));
+  box.append(card);
+}
+function showResult(){
+  quiz.active=false;S.rounds=(S.rounds||0)+1;save();
+  const box=$("#quiz-run");box.innerHTML="";
+  const p=pct(quiz.right,quiz.list.length);
+  const by={};quiz.log.forEach(({q,ok})=>{const b=by[q.t]||(by[q.t]={r:0,t:0});b.t++;if(ok)b.r++;});
+  const bars=el("div",{class:"bars"});
+  Object.entries(by).forEach(([t,v])=>{
+    const w=pct(v.r,v.t);const i=el("i");i.style.width=w+"%";i.style.background=w>=80?"var(--good)":w>=50?"var(--warn)":"var(--bad)";
+    bars.append(el("div",{class:"bar"},el("span",{text:TNAME[t]}),el("div",{class:"track"},i),el("span",{class:"v",text:`${v.r}/${v.t}`})));
+  });
+  const wrong=quiz.log.filter(x=>!x.ok).map(x=>x.q);
+  const again=el("button",{class:"btn",text:`${wrong.length} falsch beantwortete Fragen wiederholen`});
+  again.disabled=wrong.length===0;again.addEventListener("click",()=>startQuiz(shuffle(wrong)));
+  const neu=el("button",{class:"btn ghost",text:"Neue Runde"});neu.addEventListener("click",renderQuizSetup);
+  const chk=el("a",{class:"btn ghost",href:"#check",text:"Zum Kompetenzcheck"});chk.style.textDecoration="none";
+  box.append(el("div",{class:"qcard result"},
+    el("div",{class:"eyebrow",text:"Auswertung"}),
+    el("div",{class:"score mono",text:`${quiz.right} / ${quiz.list.length}`}),
+    el("p",{text:p>=80?"Stark. Das sitzt schon richtig gut.":p>=50?"Solide Grundlage. Wiederhole die Fragen, bei denen es gehakt hat.":"Hier lohnt sich Wiederholung. Schau dir die Lernkarten zu den Themen an und versuche es dann erneut."}),
+    bars,
+    el("div",{class:"row"},again,neu,chk)
+  ));
+}
+
+/* ---------- Lernkarten ---------- */
+const cs={sel:new Set(),onlyOpen:false,order:null,i:0};
+function cardPool(){
+  let list=CARDS.map((c,idx)=>({...c,idx})).filter(c=>cs.sel.size===0||cs.sel.has(c.t));
+  if(cs.onlyOpen) list=list.filter(c=>S.cards[c.idx]!=="known");
+  if(cs.order){const pos=new Map(cs.order.map((v,k)=>[v,k]));list.sort((a,b)=>(pos.get(a.idx)??0)-(pos.get(b.idx)??0));}
+  return list;
+}
+function renderCards(){
+  chipGroup($("#card-topics"),cs.sel,()=>{cs.i=0;renderCards();});
+  $("#card-open").setAttribute("aria-pressed",String(cs.onlyOpen));
+  const area=$("#card-area");area.innerHTML="";
+  const list=cardPool();
+  const all=CARDS.filter(c=>cs.sel.size===0||cs.sel.has(c.t));
+  const known=CARDS.map((c,i)=>i).filter(i=>(cs.sel.size===0||cs.sel.has(CARDS[i].t))&&S.cards[i]==="known").length;
+  if(!list.length){
+    area.append(el("div",{class:"panel"},el("h3",{text:"Alle Karten dieser Auswahl sitzen."}),el("p",{text:"Schalte „Nur Karten, die noch nicht sitzen“ aus, um sie noch einmal durchzugehen, oder probiere das Quiz dazu."})));
+    return;
+  }
+  if(cs.i>=list.length) cs.i=0;
+  const c=list[cs.i];
+  const flash=el("button",{class:"flash","aria-label":"Karte umdrehen"},
+    el("div",{class:"face front"},el("span",{class:"tag",text:TNAME[c.t]}),el("div",{class:"term",text:c.f}),el("span",{class:"hint",text:"Tippen zum Umdrehen"})),
+    el("div",{class:"face back"},el("div",{class:"eyebrow",text:c.f}),el("div",{class:"def",text:c.b}),el("span",{class:"hint",text:"Tippen zum Zurückdrehen"}))
+  );
+  flash.addEventListener("click",()=>flash.classList.toggle("flipped"));
+  const mark=v=>{S.cards[c.idx]=v;save();if(!(cs.onlyOpen&&v==="known"))cs.i++;renderCards();};
+  const again=el("button",{class:"btn again",text:"Nochmal"});again.addEventListener("click",()=>mark("again"));
+  const ok=el("button",{class:"btn known",text:"Kann ich"});ok.addEventListener("click",()=>mark("known"));
+  const prev=el("button",{class:"btn ghost",text:"Zurück","aria-label":"Vorherige Karte"});prev.disabled=cs.i===0;prev.addEventListener("click",()=>{cs.i--;renderCards();});
+  const state=S.cards[c.idx];
+  area.append(
+    el("div",{class:"flipzone"},flash),
+    el("div",{class:"cardbar"},
+      el("span",{class:"counts",text:`Karte ${cs.i+1} von ${list.length} · ${known} von ${all.length} sitzen${state?" · zuletzt: "+(state==="known"?"kann ich":"nochmal"):""}`}),
+      el("div",{class:"row"},prev,again,ok)
+    )
+  );
+}
+$("#card-open").addEventListener("click",()=>{cs.onlyOpen=!cs.onlyOpen;cs.i=0;renderCards();});
+$("#card-shuffle").addEventListener("click",()=>{cs.order=shuffle(CARDS.map((c,i)=>i));cs.i=0;renderCards();});
+document.addEventListener("keydown",e=>{
+  if($("#v-karten").hidden||e.target.tagName==="INPUT")return;
+  if(e.key===" "&&e.target===document.body){e.preventDefault();const f=$(".flash");if(f)f.classList.toggle("flipped");}
+});
+
+/* ---------- Kompetenzcheck ---------- */
+const SELF={1:"noch unsicher",2:"teilweise",3:"sicher"};
+function topicStatus(t){
+  const comps=COMPS.filter(c=>c.t===t);
+  const vals=comps.map(c=>S.self[c.id]).filter(Boolean);
+  const selfAvg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;
+  const q=S.quiz[t];const qp=q&&q.t?q.r/q.t:null;
+  if(selfAvg==null&&qp==null) return {c:"n",label:"noch offen",selfAvg,qp,q};
+  // Kombination: Selbsteinschätzung (1–3 → 0–1) und Quizquote, gleich gewichtet, wenn beides vorliegt
+  const parts=[];if(selfAvg!=null)parts.push((selfAvg-1)/2);if(qp!=null)parts.push(qp);
+  const score=parts.reduce((a,b)=>a+b,0)/parts.length;
+  if(score>=0.75) return {c:"g",label:"sitzt",selfAvg,qp,q,score};
+  if(score>=0.45) return {c:"y",label:"festigen",selfAvg,qp,q,score};
+  return {c:"r",label:"wiederholen",selfAvg,qp,q,score};
+}
+function renderCheck(){
+  const comp=$("#comp");comp.innerHTML="";
+  TOPICS.forEach(t=>{
+    const st=topicStatus(t.id);
+    const box=el("div",{class:"ctopic"});
+    const info=st.q&&st.q.t?`Quiz: ${st.q.r} von ${st.q.t} richtig (${pct(st.q.r,st.q.t)} %)`:"Quiz: noch keine Fragen beantwortet";
+    box.append(el("div",{class:"chead"},el("h3",{text:t.name}),el("span",{class:"light "+st.c,text:st.label})),el("div",{class:"quizinfo",text:info}));
+    COMPS.filter(c=>c.t===t.id).forEach(c=>{
+      const seg=el("div",{class:"seg",role:"group","aria-label":"Selbsteinschätzung"});
+      [1,2,3].forEach(v=>{
+        const b=el("button",{"data-v":String(v),"aria-pressed":String(S.self[c.id]===v),text:SELF[v]});
+        b.addEventListener("click",()=>{S.self[c.id]=(S.self[c.id]===v?undefined:v);if(S.self[c.id]===undefined)delete S.self[c.id];save();renderCheck();});
+        seg.append(b);
+      });
+      box.append(el("div",{class:"stmt"},el("span",{text:c.s}),seg));
+    });
+    comp.append(box);
+  });
+  // Lernplan
+  const recs=$("#recs");recs.innerHTML="";
+  const ranked=TOPICS.map(t=>({t,st:topicStatus(t.id)})).filter(x=>x.st.c==="r"||x.st.c==="y").sort((a,b)=>(a.st.score??1)-(b.st.score??1));
+  const open=TOPICS.filter(t=>topicStatus(t.id).c==="n");
+  if(!ranked.length&&!open.length){
+    recs.append(el("p",{text:"Alle Themen stehen auf Grün. Mach zur Sicherheit noch eine gemischte Quizrunde mit allen Themen."}));
+  }
+  ranked.forEach(({t,st})=>{
+    const q=el("button",{class:"btn",text:"Quiz üben"});q.addEventListener("click",()=>{quiz.sel=new Set([t.id]);location.hash="quiz";renderQuizSetup();});
+    const k=el("button",{class:"btn ghost",text:"Lernkarten"});k.addEventListener("click",()=>{cs.sel=new Set([t.id]);cs.onlyOpen=false;cs.i=0;location.hash="karten";});
+    recs.append(el("div",{class:"rec"},el("span",{},el("span",{class:"light "+st.c,text:st.label})," ",el("b",{text:t.name})),el("div",{class:"row"},k,q)));
+  });
+  if(open.length){
+    recs.append(el("p",{class:"note",text:"Noch ohne Einschätzung und ohne Quizergebnis: "+open.map(t=>t.name).join(", ")+"."}));
+  }
+}
+function renderReset(){
+  const z=$("#reset-zone");z.innerHTML="";
+  const ask=el("button",{class:"btn ghost",text:"Zurücksetzen …"});
+  ask.addEventListener("click",()=>{
+    z.innerHTML="";
+    const yes=el("button",{class:"btn warn",text:"Ja, alles löschen"});
+    const no=el("button",{class:"btn ghost",text:"Abbrechen"});
+    yes.addEventListener("click",()=>{S={quiz:{},cards:{},self:{},rounds:0};save();renderReset();renderCheck();z.append(el("span",{class:"note",text:" Fortschritt gelöscht."}));});
+    no.addEventListener("click",renderReset);
+    z.append(el("div",{class:"confirm"},el("span",{text:"Wirklich alles löschen?"}),yes,no));
+  });
+  z.append(ask);
+}
+renderReset();
+route();
+</script>
+
+</body>
+</html>

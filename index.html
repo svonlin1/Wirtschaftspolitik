@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: schmale Lernspalte, oben ein Konjunkturzyklus als Leitmotiv, darunter Reiter für Start / Quiz / Lernkarten / Kompetenzcheck */
+/* Layout: schmale Lernspalte, oben ein Konjunkturzyklus als Leitmotiv, darunter Reiter für Start / Quiz / Kompetenzcheck */
 :root{
   --bg:#F1F4F5; --surface:#FFFFFF; --ink:#13232E; --muted:#56666F; --line:#D3DCE0;
   --accent:#0B6E79; --accent-ink:#FFFFFF; --soft:#DCEDEE; --signal:#C9661A; --signal-soft:#FBEBDD;
@@ -62,7 +62,7 @@ section.view{display:grid;gap:22px}
 .cycle svg{display:block;width:100%;min-width:520px;height:auto}
 .cycle text{font-family:var(--f-body);fill:var(--muted);font-size:13px}
 .cycle .ph{font-weight:700;fill:var(--ink);font-size:14px}
-.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .tile{display:grid;gap:6px;align-content:start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;text-decoration:none;color:inherit}
 .tile:hover{border-color:var(--accent)}
 .tile .big{font-family:var(--f-display);font-weight:800;font-size:1.25rem}
@@ -127,21 +127,6 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--li
 .bar .track i{display:block;height:100%}
 .bar .v{font-family:var(--f-mono);text-align:right}
 
-/* Karten */
-.flipzone{perspective:1200px}
-.flash{position:relative;width:100%;min-height:270px;border:0;padding:0;background:none;text-align:left;transform-style:preserve-3d;transition:transform .45s ease}
-.flash.flipped{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;overflow:auto;backface-visibility:hidden;border-radius:var(--r);padding:24px;display:grid;align-content:center;gap:10px;border:1px solid var(--line)}
-.face.front{background:var(--surface)}
-.face.back{background:var(--soft);transform:rotateY(180deg)}
-.face .term{font-family:var(--f-display);font-weight:800;font-size:clamp(1.4rem,4vw,1.9rem)}
-.face .def{font-size:1.02rem;max-width:62ch}
-.face .hint{position:absolute;right:16px;bottom:12px;font-size:.8rem;color:var(--muted)}
-.cardbar{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
-.btn.again{background:var(--warn-soft);color:var(--ink);border:1px solid var(--warn)}
-.btn.known{background:var(--good-soft);color:var(--ink);border:1px solid var(--good)}
-.counts{font-family:var(--f-mono);font-size:.85rem;color:var(--muted)}
-
 /* Kompetenzcheck */
 .comp{display:grid;gap:14px}
 .ctopic{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:10px}
@@ -165,7 +150,6 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--li
 .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.92rem}
 
 @media (max-width:720px){
-  .flash{min-height:330px}
   .tiles{grid-template-columns:minmax(0,1fr)}
   .two{grid-template-columns:minmax(0,1fr)}
   .stmt{grid-template-columns:minmax(0,1fr)}
@@ -186,7 +170,6 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--li
     <nav class="tabs" aria-label="Bereiche">
       <a href="#start" data-view="start">Start</a>
       <a href="#quiz" data-view="quiz">Quiz</a>
-      <a href="#karten" data-view="karten">Lernkarten</a>
       <a href="#check" data-view="check">Kompetenzcheck</a>
     </nav>
   </div>
@@ -197,7 +180,7 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--li
   <section class="view" id="v-start">
     <div class="hero">
       <div class="eyebrow">Sozialwissenschaften Q1 · 1. Klausur · Konjunkturanalyse</div>
-      <h1>Bereit für das Jahresgutachten?</h1>
+      <h1>Bereit für die Klausur?</h1>
       <p class="lead">Hier wiederholst du alles aus der Reihe „Sachverständigenrat“: Wirtschaftskreislauf, BIP, Konjunkturphasen, die Ziele des Stabilitätsgesetzes, Arbeitslosigkeit, Inflation, Außenbeitrag und die Bewertung wirtschaftspolitischer Maßnahmen. Dein Fortschritt wird nur in diesem Browser gespeichert.</p>
     </div>
     <div class="cycle" aria-label="Idealtypischer Konjunkturzyklus mit vier Phasen">
@@ -222,7 +205,6 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--li
     </div>
     <div class="tiles">
       <a class="tile" href="#quiz"><span class="eyebrow">Üben</span><span class="big">Quiz</span><span class="meta">Multiple Choice und Rechenaufgaben mit Erklärung zu jeder Antwort.</span><span class="stat" id="t-quiz"></span></a>
-      <a class="tile" href="#karten"><span class="eyebrow">Wiederholen</span><span class="big">Lernkarten</span><span class="meta">Fachbegriffe umdrehen, einsortieren und so lange wiederholen, bis sie sitzen.</span><span class="stat" id="t-cards"></span></a>
       <a class="tile" href="#check"><span class="eyebrow">Einschätzen</span><span class="big">Kompetenzcheck</span><span class="meta">Was kannst du schon sicher? Selbsteinschätzung plus Quizergebnisse ergeben deinen Lernplan.</span><span class="stat" id="t-check"></span></a>
     </div>
   </section>
@@ -243,20 +225,6 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--li
     <div id="quiz-run" hidden></div>
   </section>
 
-  <!-- KARTEN -->
-  <section class="view" id="v-karten" hidden>
-    <div class="panel">
-      <div class="eyebrow">Lernkarten</div>
-      <h2>Fachbegriffe wiederholen</h2>
-      <div class="chips" id="card-topics"></div>
-      <div class="row">
-        <button class="chip" id="card-open" aria-pressed="false">Nur Karten, die noch nicht sitzen</button>
-        <button class="btn ghost" id="card-shuffle">Mischen</button>
-      </div>
-    </div>
-    <div id="card-area"></div>
-  </section>
-
   <!-- CHECK -->
   <section class="view" id="v-check" hidden>
     <div class="panel">
@@ -271,7 +239,7 @@ select{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--li
     <div class="comp" id="comp"></div>
     <div class="panel">
       <h3>Fortschritt zurücksetzen</h3>
-      <p class="note">Löscht Quizergebnisse, Kartenstand und Selbsteinschätzung in diesem Browser.</p>
+      <p class="note">Löscht Quizergebnisse und Selbsteinschätzung in diesem Browser.</p>
       <div id="reset-zone"><button class="btn ghost" id="reset-ask">Zurücksetzen …</button></div>
     </div>
   </section>
@@ -375,49 +343,6 @@ const QUESTIONS = [
   
 ];
 
-const CARDS = [
- {t:"kreislauf",f:"Erweiterter Wirtschaftskreislauf",b:"Modell der Geld- und Güterströme zwischen privaten Haushalten, Unternehmen, Staat und Geschäftsbanken; später ergänzt um Ausland und EZB."},
- {t:"kreislauf",f:"Transferzahlungen",b:"Zahlungen des Staates an private Haushalte, z. B. Kindergeld, Wohngeld, Arbeitslosengeld. Synonym: Transferleistungen, Sozialtransfers."},
- {t:"kreislauf",f:"Staat (in der VWL)",b:"Die politisch handelnde Einheit: Bund, Länder, Gemeinden (z. B. Bundesregierung, Bürgermeisterin). Ein Land heißt genauer Nationalstaat."},
- {t:"kreislauf",f:"Wirkungskette",b:"Begründete Abfolge von Ursache und Wirkung zwischen Akteuren, z. B. höhere Zinsen → teurere Kredite → weniger Investitionen → weniger Produktion."},
- {t:"bip",f:"Bruttoinlandsprodukt (BIP)",b:"Wert aller Waren und Dienstleistungen, die in einem Jahr innerhalb der Landesgrenzen erwirtschaftet werden (ohne Vorleistungen)."},
- {t:"bip",f:"Inlandsprinzip",b:"Zum BIP zählt, was im Inland erwirtschaftet wird, auch von Ausländer:innen. Leistungen von Inländer:innen im Ausland zählen nicht."},
- {t:"bip",f:"Wertschöpfung",b:"Produktionswert einer Branche minus Vorleistungen aus anderen Branchen. Die Summe aller Wertschöpfungen ergibt das BIP (Entstehungsrechnung)."},
- {t:"bip",f:"Entstehungs-, Verwendungs-, Verteilungsrechnung",b:"Entstehung: Wertschöpfung der Wirtschaftsbereiche. Verwendung: Konsum privat + Staat + Investitionen + Außenbeitrag. Verteilung: Arbeitnehmerentgelte + Unternehmensgewinne + Vermögenserträge."},
- {t:"bip",f:"Nominales vs. reales BIP",b:"Nominal: zu aktuellen Marktpreisen. Real: zu konstanten Preisen eines Basisjahres, also ohne Preiseffekte. Für Wachstumsvergleiche nutzt man das reale BIP."},
- {t:"konjunktur",f:"Konjunktur",b:"Die gesamtwirtschaftliche Lage zu einem bestimmten Zeitpunkt, abgebildet durch Indikatoren. Übergeordneter Maßstab ist das BIP."},
- {t:"konjunktur",f:"Aufschwung (Expansion)",b:"Beschäftigung, Einkommen, Investitionen, Produktion und Konsum steigen; Kapazitäten werden besser ausgelastet; Preise steigen noch kaum."},
- {t:"konjunktur",f:"Boom (Hochkonjunktur)",b:"Kapazitäten voll ausgelastet, Engpässe, Nachfrageüberschuss; Preise und Löhne steigen; sehr niedrige Arbeitslosigkeit; Importe nehmen zu."},
- {t:"konjunktur",f:"Abschwung (Rezession)",b:"Nachfrage und Auslastung sinken, Investitionen werden verschoben, Produktion und Beschäftigung sinken; Preissteigerung lässt nach. Rezession: reales BIP zwei Quartale in Folge ohne Wachstum."},
- {t:"konjunktur",f:"Konjunkturtief (Depression)",b:"Sehr geringe Nachfrage, Investitionen und Gewinne; Entlassungen und Pleiten; sinkende Preise (Deflationsgefahr) können den Konsum mittelfristig wieder anregen."},
- {t:"ziele",f:"Stabilitäts- und Wachstumsgesetz (1967)",b:"Verpflichtet Bund und Länder auf: stabiles Preisniveau, hohen Beschäftigungsstand, außenwirtschaftliches Gleichgewicht sowie stetiges und angemessenes Wirtschaftswachstum."},
- {t:"ziele",f:"Magisches Viereck",b:"Die vier Ziele des StabG. „Magisch“, weil sie in Konflikt zueinander stehen können und kaum gleichzeitig vollständig erreichbar sind."},
- {t:"ziele",f:"Magisches Sechseck",b:"Viereck plus gerechte Einkommens- und Vermögensverteilung und Schutz der Umwelt."},
- {t:"ziele",f:"Zielwerte (im Unterricht)",b:"Wachstum real ca. 2–3 %; Arbeitslosenquote unter ca. 3 %; Inflationsrate ca. 2 %; Außenbeitrag ausgeglichen bzw. leichter Exportüberschuss (in % des BIP)."},
- {t:"ziele",f:"Zielkonflikt vs. Zielharmonie",b:"Konflikt: ein Ziel gefährdet ein anderes (z. B. Boom → Preisanstieg). Harmonie: Ziele fördern sich gegenseitig (z. B. Wachstum → Beschäftigung)."},
- {t:"arbeit",f:"Arbeitslos (nach SGB)",b:"Ohne Beschäftigung von 15 Wochenstunden oder mehr, sucht eine versicherungspflichtige Stelle, steht der Vermittlung zur Verfügung und ist persönlich arbeitslos gemeldet."},
- {t:"arbeit",f:"Arbeitslosenquote",b:"Arbeitslose ÷ (abhängige zivile Erwerbstätige + Arbeitslose) × 100. Erwerbspersonen = Erwerbstätige + Arbeitslose."},
- {t:"arbeit",f:"Stille Reserve",b:"Menschen, die arbeiten würden, sich aber nicht arbeitslos melden, z. B. aus Entmutigung. Sie fehlen in der Arbeitslosenstatistik."},
- {t:"arbeit",f:"Friktionelle Arbeitslosigkeit",b:"Übergangsarbeitslosigkeit, z. B. zwischen zwei Jobs."},
- {t:"arbeit",f:"Saisonale Arbeitslosigkeit",b:"Entsteht, weil manche Branchen nur zu bestimmten Jahreszeiten Arbeit haben (Bau, Tourismus, Weihnachtsgeschäft)."},
- {t:"arbeit",f:"Merkmals-strukturelle Arbeitslosigkeit",b:"„Mismatch“: Die Qualifikation oder ein Merkmal der Arbeitnehmenden passt nicht zu den Anforderungen der Arbeitgeber."},
- {t:"arbeit",f:"Strukturelle / technologische Arbeitslosigkeit",b:"Arbeitsplätze fallen durch Automatisierung oder Strukturwandel dauerhaft weg."},
- {t:"arbeit",f:"Konjunkturelle Arbeitslosigkeit",b:"Entsteht durch wirtschaftliche Schwankungen, vor allem in Rezession und Depression."},
- {t:"inflation",f:"Warenkorb",b:"Repräsentative, über die Zeit gleich zusammengesetzte Auswahl von rund 600 Güterarten, die ein typischer Haushalt kauft."},
- {t:"inflation",f:"Wägungsschema",b:"Gewichtung der Güterarten nach ihrem Anteil an den Haushaltsausgaben. Wohnen und Energie wiegen schwer, Bildung leicht."},
- {t:"inflation",f:"Verbraucherpreisindex (VPI)",b:"Preis des Warenkorbs im Verhältnis zum Basisjahr × 100 (Basisjahr = 100). Kennzahl für das Preisniveau."},
- {t:"inflation",f:"Inflationsrate",b:"Prozentuale Veränderung des VPI gegenüber dem Vorjahr: (VPI neu − VPI alt) ÷ VPI alt × 100."},
- {t:"inflation",f:"Deflation",b:"Anhaltend sinkendes Preisniveau (negative Inflationsrate). Gefahr: Konsum wird aufgeschoben, Nachfrage und Investitionen sinken weiter."},
- {t:"aussen",f:"Außenbeitrag",b:"Exporte − Importe. Positiv = Exportüberschuss, negativ = Importüberschuss."},
- {t:"aussen",f:"Außenbeitrag in % des BIP",b:"Außenbeitrag ÷ BIP × 100. Macht Länder und Jahre vergleichbar."},
- {t:"aussen",f:"Exportüberschuss: Vor- und Nachteile",b:"Vorteile: Arbeitsplätze, Wachstum, Wettbewerbsfähigkeit. Nachteile: Abhängigkeit vom Ausland (Zölle, Krisen), Handelskonflikte, Verschuldung der Partnerländer."},
- {t:"massnahmen",f:"Effizienz",b:"Ist die Maßnahme wirksam? Stehen Kosten und Nutzen im Verhältnis? Ist sie finanzierbar?"},
- {t:"massnahmen",f:"Legitimität",b:"Ist die Maßnahme gerecht (generationen-, leistungs-, chancen-, bedarfsgerecht), moralisch vertretbar, akzeptiert und umweltverträglich?"},
- {t:"massnahmen",f:"Wirkungsmatrix",b:"Einschätzung, wie eine Maßnahme Beschäftigung, Produktion, Investitionen, Konsum, Preise, Staatsverschuldung und Außenbeitrag verändert (++ bis – –), jeweils mit Begründung."},
- {t:"massnahmen",f:"Antizyklische Politik",b:"Der Staat steuert gegen den Konjunkturverlauf: in der Krise Nachfrage stützen (mehr Ausgaben, Entlastungen), im Boom bremsen."},
- {t:"analyse",f:"Sachverständigenrat",b:"Gremium der „Wirtschaftsweisen“ seit 1963 mit fünf Mitgliedern; berät die Politik wissenschaftlich und legt jedes Jahr im November ein Jahresgutachten vor."},
- {t:"analyse",f:"Prozentuale Veränderung",b:"(Endwert − Anfangswert) ÷ Anfangswert × 100"}
-];
 
 const COMPS = [
  {id:"k1",t:"kreislauf",s:"Ich kann die Akteure und die Geld- und Güterströme des erweiterten Wirtschaftskreislaufs erklären."},
@@ -469,13 +394,12 @@ function chipGroup(container,selected,onChange,{allLabel="Alle Themen"}={}){
 }
 
 /* ---------- Routing ---------- */
-const VIEWS=["start","quiz","karten","check"];
+const VIEWS=["start","quiz","check"];
 function route(){
   let v=(location.hash||"#start").slice(1); if(!VIEWS.includes(v)) v="start";
   VIEWS.forEach(x=>{$("#v-"+x).hidden=(x!==v);});
   document.querySelectorAll("nav.tabs a").forEach(a=>a.setAttribute("aria-current",a.dataset.view===v?"page":"false"));
   if(v==="start") renderStart();
-  if(v==="karten") renderCards();
   if(v==="check") renderCheck();
   if(v==="quiz" && !quiz.active) renderQuizSetup();
   window.scrollTo(0,0);
@@ -492,7 +416,6 @@ function totals(){
 function renderStart(){
   const x=totals();
   $("#t-quiz").textContent=x.t?`${x.r} von ${x.t} richtig (${pct(x.r,x.t)} %)`:`${QUESTIONS.length} Fragen`;
-  $("#t-cards").textContent=`${x.known} von ${CARDS.length} Karten sitzen`;
   $("#t-check").textContent=`${x.rated} von ${COMPS.length} Aussagen eingeschätzt`;
 }
 
@@ -587,57 +510,11 @@ function showResult(){
   box.append(el("div",{class:"qcard result"},
     el("div",{class:"eyebrow",text:"Auswertung"}),
     el("div",{class:"score mono",text:`${quiz.right} / ${quiz.list.length}`}),
-    el("p",{text:p>=80?"Stark. Das sitzt schon richtig gut.":p>=50?"Solide Grundlage. Wiederhole die Fragen, bei denen es gehakt hat.":"Hier lohnt sich Wiederholung. Schau dir die Lernkarten zu den Themen an und versuche es dann erneut."}),
+    el("p",{text:p>=80?"Stark. Das sitzt schon richtig gut.":p>=50?"Solide Grundlage. Wiederhole die Fragen, bei denen es gehakt hat.":"Hier lohnt sich Wiederholung. Wiederhole die falsch beantworteten Fragen und lies die Erklärungen genau."}),
     bars,
     el("div",{class:"row"},again,neu,chk)
   ));
 }
-
-/* ---------- Lernkarten ---------- */
-const cs={sel:new Set(),onlyOpen:false,order:null,i:0};
-function cardPool(){
-  let list=CARDS.map((c,idx)=>({...c,idx})).filter(c=>cs.sel.size===0||cs.sel.has(c.t));
-  if(cs.onlyOpen) list=list.filter(c=>S.cards[c.idx]!=="known");
-  if(cs.order){const pos=new Map(cs.order.map((v,k)=>[v,k]));list.sort((a,b)=>(pos.get(a.idx)??0)-(pos.get(b.idx)??0));}
-  return list;
-}
-function renderCards(){
-  chipGroup($("#card-topics"),cs.sel,()=>{cs.i=0;renderCards();});
-  $("#card-open").setAttribute("aria-pressed",String(cs.onlyOpen));
-  const area=$("#card-area");area.innerHTML="";
-  const list=cardPool();
-  const all=CARDS.filter(c=>cs.sel.size===0||cs.sel.has(c.t));
-  const known=CARDS.map((c,i)=>i).filter(i=>(cs.sel.size===0||cs.sel.has(CARDS[i].t))&&S.cards[i]==="known").length;
-  if(!list.length){
-    area.append(el("div",{class:"panel"},el("h3",{text:"Alle Karten dieser Auswahl sitzen."}),el("p",{text:"Schalte „Nur Karten, die noch nicht sitzen“ aus, um sie noch einmal durchzugehen, oder probiere das Quiz dazu."})));
-    return;
-  }
-  if(cs.i>=list.length) cs.i=0;
-  const c=list[cs.i];
-  const flash=el("button",{class:"flash","aria-label":"Karte umdrehen"},
-    el("div",{class:"face front"},el("span",{class:"tag",text:TNAME[c.t]}),el("div",{class:"term",text:c.f}),el("span",{class:"hint",text:"Tippen zum Umdrehen"})),
-    el("div",{class:"face back"},el("div",{class:"eyebrow",text:c.f}),el("div",{class:"def",text:c.b}),el("span",{class:"hint",text:"Tippen zum Zurückdrehen"}))
-  );
-  flash.addEventListener("click",()=>flash.classList.toggle("flipped"));
-  const mark=v=>{S.cards[c.idx]=v;save();if(!(cs.onlyOpen&&v==="known"))cs.i++;renderCards();};
-  const again=el("button",{class:"btn again",text:"Nochmal"});again.addEventListener("click",()=>mark("again"));
-  const ok=el("button",{class:"btn known",text:"Kann ich"});ok.addEventListener("click",()=>mark("known"));
-  const prev=el("button",{class:"btn ghost",text:"Zurück","aria-label":"Vorherige Karte"});prev.disabled=cs.i===0;prev.addEventListener("click",()=>{cs.i--;renderCards();});
-  const state=S.cards[c.idx];
-  area.append(
-    el("div",{class:"flipzone"},flash),
-    el("div",{class:"cardbar"},
-      el("span",{class:"counts",text:`Karte ${cs.i+1} von ${list.length} · ${known} von ${all.length} sitzen${state?" · zuletzt: "+(state==="known"?"kann ich":"nochmal"):""}`}),
-      el("div",{class:"row"},prev,again,ok)
-    )
-  );
-}
-$("#card-open").addEventListener("click",()=>{cs.onlyOpen=!cs.onlyOpen;cs.i=0;renderCards();});
-$("#card-shuffle").addEventListener("click",()=>{cs.order=shuffle(CARDS.map((c,i)=>i));cs.i=0;renderCards();});
-document.addEventListener("keydown",e=>{
-  if($("#v-karten").hidden||e.target.tagName==="INPUT")return;
-  if(e.key===" "&&e.target===document.body){e.preventDefault();const f=$(".flash");if(f)f.classList.toggle("flipped");}
-});
 
 /* ---------- Kompetenzcheck ---------- */
 const SELF={1:"noch unsicher",2:"teilweise",3:"sicher"};
@@ -681,8 +558,7 @@ function renderCheck(){
   }
   ranked.forEach(({t,st})=>{
     const q=el("button",{class:"btn",text:"Quiz üben"});q.addEventListener("click",()=>{quiz.sel=new Set([t.id]);location.hash="quiz";renderQuizSetup();});
-    const k=el("button",{class:"btn ghost",text:"Lernkarten"});k.addEventListener("click",()=>{cs.sel=new Set([t.id]);cs.onlyOpen=false;cs.i=0;location.hash="karten";});
-    recs.append(el("div",{class:"rec"},el("span",{},el("span",{class:"light "+st.c,text:st.label})," ",el("b",{text:t.name})),el("div",{class:"row"},k,q)));
+    recs.append(el("div",{class:"rec"},el("span",{},el("span",{class:"light "+st.c,text:st.label})," ",el("b",{text:t.name})),el("div",{class:"row"},q)));
   });
   if(open.length){
     recs.append(el("p",{class:"note",text:"Noch ohne Einschätzung und ohne Quizergebnis: "+open.map(t=>t.name).join(", ")+"."}));
